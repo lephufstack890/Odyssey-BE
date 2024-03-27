@@ -37,3 +37,4 @@ Route::post('logout', [AuthController::class, 'logout'])->middleware('auth:api')
 // Client
 Route::post('/contact', [ContactController::class, 'index']);
 Route::post('/subcribe', [SubcribeController::class, 'index']);
+//
