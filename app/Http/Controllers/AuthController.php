@@ -52,32 +52,33 @@ class AuthController extends Controller
 
     public function changePassword(Request $request)
     {
+        // Ensure user is authenticated
+        if (!Auth::check()) {
+            return response()->json(['message' => 'Unauthenticated'], 401);
+        }
+    
         // Validate incoming request data
         $request->validate([
-            'email' => 'required|email',
             'old_password' => 'required|string',
             'new_password' => 'required|string|min:6|max:255',
         ]);
-
+    
         // Retrieve the authenticated user
         $user = Auth::user();
-
-        // Verify if the provided email matches the authenticated user's email
-        if ($request->input('email') !== $user->email) {
-            return response()->json(['message' => 'Invalid email'], 400);
-        }
-
+    
         // Verify if the old password matches the user's current password
         if (!Hash::check($request->input('old_password'), $user->password)) {
             return response()->json(['message' => 'Current password is incorrect'], 400);
         }
-
+    
         // Update the user's password
         $user->password = Hash::make($request->input('new_password'));
+        
         $user->save();
-
+    
         return response()->json(['message' => 'Password changed successfully'], 200);
     }
+    
 
     public function logout()
     {
